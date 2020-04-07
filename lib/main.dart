@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 //import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() => runApp(Quizzler());
 
@@ -28,21 +29,46 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> scoreKeeper = [];
+  List<Icon> _scoreKeeper = [];
 
   void checkAnswer(bool userPickedAnswer) {
-      if (QuizBrain().getAnswer == userPickedAnswer) {
-        scoreKeeper.add(
-          Icon(
-            Icons.cancel,
-            color: Colors.red,
-          ),
-        );
-      } else {
-        scoreKeeper.add(
-          Icon(Icons.check_circle, color: Colors.green),
-        );
-      }
+    if (QuizBrain().isFinished()) {
+      Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Quiz Completed",
+        desc: "Now Quiz will be reset, you can try again",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Reset",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () {
+              setState(() {
+                QuizBrain().reset();
+                _scoreKeeper.clear();
+              });
+
+              Navigator.pop(context);
+            },
+            width: 120,
+          )
+        ],
+      ).show();
+    }
+    if (QuizBrain().getAnswer == userPickedAnswer) {
+      _scoreKeeper.add(
+        Icon(
+          Icons.cancel,
+          color: Colors.red,
+        ),
+      );
+    } else {
+      _scoreKeeper.add(
+        Icon(Icons.check_circle, color: Colors.green),
+      );
+    }
     setState(() {
       QuizBrain().nextQuestion();
     });
@@ -102,17 +128,17 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
- checkAnswer(false);
+                checkAnswer(false);
               },
             ),
           ),
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-         // dragStartBehavior: DragStartBehavior.start,
-          child: scoreKeeper.length <= 0
+          // dragStartBehavior: DragStartBehavior.start,
+          child: _scoreKeeper.length <= 0
               ? SizedBox(height: 23.5)
-              : Row(children: scoreKeeper),
+              : Row(children: _scoreKeeper),
         )
       ],
     );

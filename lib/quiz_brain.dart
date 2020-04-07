@@ -34,10 +34,20 @@ class QuizBrain {
         true)
   ];
   nextQuestion() {
-    
-    if (_questionNumber < _questionList.length-1) {
+    if (_questionNumber < _questionList.length - 1) {
       _questionNumber++;
     }
+  }
+
+  bool isFinished() {
+    if (_questionNumber >= _questionList.length-1)
+      return true;
+     else
+      return false;
+  }
+
+  reset() {
+    _questionNumber = 0;
   }
 
   String get getQuestion {
