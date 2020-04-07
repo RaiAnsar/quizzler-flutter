@@ -49,7 +49,6 @@ class _QuizPageState extends State<QuizPage> {
                 QuizBrain().reset();
                 _scoreKeeper.clear();
               });
-
               Navigator.pop(context);
             },
             width: 120,
